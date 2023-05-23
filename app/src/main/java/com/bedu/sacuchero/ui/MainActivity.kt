@@ -1,19 +1,21 @@
-package com.bedu.sacuchero
+package com.bedu.sacuchero.ui
 
 import android.content.Intent
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
-import android.view.LayoutInflater
-import android.view.View
-import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import com.bedu.sacuchero.R
+import com.bedu.sacuchero.data.room.UsersViewModel
 import com.bedu.sacuchero.databinding.ActivityMainBinding
-import com.google.android.material.textfield.TextInputEditText
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
-    val user = "guille"
-    val pass = "qwerty"
+
+    private lateinit var usersViewModel: UsersViewModel
 
     private lateinit var binding: ActivityMainBinding
 
@@ -24,13 +26,30 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        usersViewModel = ViewModelProvider(this).get(UsersViewModel::class.java)
+
+        binding.usernameEditText.text = null
+        binding.passwordEditText.text = null
+
+
         binding.loginButton.setOnClickListener {
-            if(binding.usernameEditText.text.toString() == user && binding.passwordEditText.text.toString() == pass) {
-                startActivity(Intent(this, LoggedActivity::class.java))
+            lifecycleScope.launch {
+                if (usersViewModel.checkCredentials(binding.usernameEditText.text.toString(), binding.passwordEditText.text.toString())) {
+                    val intent = Intent(this@MainActivity, LoggedActivity::class.java)
+                    intent.putExtra("email", binding.usernameEditText.text.toString())
+                    startActivity(intent)
+                } else {
+                    Toast.makeText(this@MainActivity, "Email o contraseña incorrectos, revise la información", Toast.LENGTH_SHORT).show()
+                }
             }
         }
+        binding.registerButton.setOnClickListener {
+            startActivity(Intent(this, RegisterActivity::class.java))
+        }
 
-
+        binding.forgotPasswordTextView.setOnClickListener {
+            startActivity(Intent(this, EmailConfirmActivity::class.java))
+        }
 
         binding.passwordVisibilityImageView.setOnClickListener {
             togglePasswordVisibility()
@@ -51,6 +70,5 @@ class MainActivity : AppCompatActivity() {
         isPasswordVisible = !isPasswordVisible
         binding.passwordEditText.text?.let { binding.passwordEditText.setSelection(it.length) }
     }
-
 }
 

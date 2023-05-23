@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    tools:context=".MainActivity">
+    tools:context=".ui.MainActivity">
 
     <ImageView
         android:id="@+id/logoImageView"
@@ -44,7 +44,8 @@
             android:id="@+id/usernameEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Usuario" />
+            android:inputType="textEmailAddress"
+            android:hint="Correo electrónico" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -101,7 +102,7 @@
         android:text="Registrar"
         android:layout_below="@id/loginButton"
         android:backgroundTint="#377711"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="24dp" />
 
     <TextView
         android:id="@+id/forgotPasswordTextView"
